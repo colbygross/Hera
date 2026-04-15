@@ -9,5 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   createSubtask: (data) => ipcRenderer.invoke('create-subtask', data),
   updateSubtask: (data) => ipcRenderer.invoke('update-subtask', data),
   createTag: (data) => ipcRenderer.invoke('create-tag', data),
+  updateTag: (data) => ipcRenderer.invoke('update-tag', data),
+  deleteTag: (id) => ipcRenderer.invoke('delete-tag', id),
   setTaskTag: (data) => ipcRenderer.invoke('set-task-tag', data),
 });

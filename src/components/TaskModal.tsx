@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { useBoard } from '../context/BoardContext';
+import { TagManager } from './TagManager';
 
 export const TaskModal = () => {
   const { isTaskModalOpen, closeTaskModal, selectedTask, refreshBoard } = useBoard();
@@ -11,8 +12,7 @@ export const TaskModal = () => {
   const [priority, setPriority] = useState('');
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [selectedTagId, setSelectedTagId] = useState<number | ''>('');
-  const [newTagName, setNewTagName] = useState('');
-  const [newTagColor, setNewTagColor] = useState('#818181');
+  const [isTagManagerOpen, setIsTagManagerOpen] = useState(false);
   
   const { boardData } = useBoard();
   const taskSubtasks = selectedTask && boardData ? boardData.subtasks.filter((s: any) => s.task_id === selectedTask.id) : [];
@@ -48,13 +48,6 @@ export const TaskModal = () => {
 
   if (!isTaskModalOpen) return null;
 
-  const handleAddCustomTag = async () => {
-    if (newTagName.trim()) {
-      await window.electronAPI.createTag({ name: newTagName.trim(), color: newTagColor });
-      setNewTagName('');
-      await refreshBoard();
-    }
-  };
 
   const handleSave = async () => {
     if (!title.trim()) return;
@@ -72,7 +65,7 @@ export const TaskModal = () => {
       closeTaskModal();
     } else {
       const newTaskId = await window.electronAPI.createTask({
-        column_id: 1, // Will fall into the first column usually. Real logic handles positioning later if needed.
+        column_id: boardData?.columns?.[0]?.id || 1, // Falls into the first column (usually TODO)
         title,
         description,
         due_date: dueDate,
@@ -94,6 +87,8 @@ export const TaskModal = () => {
   };
 
   return (
+    <>
+    {isTagManagerOpen && <TagManager onClose={() => setIsTagManagerOpen(false)} />}
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-6 backdrop-blur-sm">
       <div className="bg-[#2e2e2e] w-full max-w-2xl max-h-full rounded-xl border border-[#818181]/30 flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
@@ -168,25 +163,12 @@ export const TaskModal = () => {
                 ))}
               </select>
               
-              <div className="w-1/2 flex items-center gap-2 border border-[#818181]/30 rounded-md p-1 bg-[#1e1e1e]">
-                 <input 
-                   type="text" 
-                   value={newTagName} 
-                   onChange={e => setNewTagName(e.target.value)} 
-                   placeholder="New Tag Name..." 
-                   className="w-full bg-transparent text-[#d2d2d2] focus:outline-none text-xs px-2"
-                   onKeyDown={(e) => { if (e.key === 'Enter') handleAddCustomTag(); }}
-                 />
-                 <div className="relative w-6 h-6 rounded overflow-hidden shrink-0 border border-[#818181]/50 cursor-pointer">
-                   <input 
-                     type="color" 
-                     value={newTagColor} 
-                     onChange={e => setNewTagColor(e.target.value)} 
-                     className="absolute -top-2 -left-2 w-10 h-10 cursor-pointer bg-transparent border-0 p-0"
-                   />
-                 </div>
-                 <button onClick={handleAddCustomTag} className="bg-[#2e2e2e] text-[#d2d2d2] px-2 py-1 rounded text-xs hover:bg-[#818181]/30 font-bold uppercase shrink-0 border border-[#818181]/30">+</button>
-              </div>
+              <button 
+                onClick={() => setIsTagManagerOpen(true)}
+                className="w-1/2 bg-[#2e2e2e] hover:bg-[#818181]/30 text-[#d2d2d2] p-2 rounded-md transition-colors border border-[#818181]/30 text-sm font-bold tracking-wider"
+              >
+                Manage Tags
+              </button>
             </div>
           </div>
 
@@ -245,5 +227,6 @@ export const TaskModal = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };

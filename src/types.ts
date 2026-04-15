@@ -26,6 +26,18 @@ export interface BoardData {
 
 declare global {
   interface Window {
-    electronAPI: any;
+    electronAPI: {
+      getBoardData: () => Promise<BoardData>;
+      createTask: (data: any) => Promise<number>;
+      updateTaskColumn: (data: any) => Promise<boolean>;
+      updateTaskDetails: (data: any) => Promise<boolean>;
+      deleteTask: (taskId: number) => Promise<boolean>;
+      createSubtask: (data: any) => Promise<boolean>;
+      updateSubtask: (data: any) => Promise<boolean>;
+      createTag: (data: any) => Promise<boolean>;
+      updateTag: (data: any) => Promise<boolean>;
+      deleteTag: (id: number) => Promise<boolean>;
+      setTaskTag: (data: any) => Promise<boolean>;
+    };
   }
 }

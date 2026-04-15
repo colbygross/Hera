@@ -70,7 +70,7 @@ export const TaskCard = ({ task }: TaskCardProps) => {
       )}
       {task.due_date && (
         <div className="text-[10px] text-gray-500 mt-3 border-t border-gray-100 pt-2 font-mono font-bold">
-          Due: {new Date(task.due_date).toLocaleDateString()}
+          Due: {new Date(task.due_date.length === 10 ? `${task.due_date}T12:00:00` : task.due_date).toLocaleDateString()}
         </div>
       )}
     </div>

@@ -175,4 +175,17 @@ export function setupIpcHandlers() {
     }
     return true;
   });
-}
+
+  ipcMain.handle('update-tag', async (event, { id, name, color }) => {
+    try {
+      await runQuery('UPDATE tags SET name = ?, color = ? WHERE id = ?', [name, color, id]);
+      return true;
+    } catch(e) { return false; }
+  });
+
+  ipcMain.handle('delete-tag', async (event, id) => {
+    await runQuery('DELETE FROM task_tags WHERE tag_id = ?', [id]);
+    await runQuery('DELETE FROM tags WHERE id = ?', [id]);
+    return true;
+  });
+} 
