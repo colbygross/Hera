@@ -1,4 +1,43 @@
-# Hera Codebase Architecture
+# Hera
+
+**An offline desktop kanban board for everyday tasks.** Hera runs locally as an Electron app and keeps every task, subtask, tag and attachment in a local SQLite database, so nothing leaves your machine.
+
+![Electron](https://img.shields.io/badge/Electron-47848F?logo=electron&logoColor=white)
+![React](https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?logo=playwright&logoColor=white)
+
+## Features
+
+- One persistent board with **TODO**, **IN PROGRESS** and **DONE** columns
+- Drag and drop tasks between columns
+- Tasks with descriptions, due dates, priorities, checklists of subtasks, and attachments
+- Color-coded tags that are reusable across tasks
+- Search that filters the board instantly
+- Optional voice input ([`scripts/voice_to_task.py`](scripts/voice_to_task.py)): speak a task, transcribe it locally with whisper.cpp, and have a local LLM (Ollama) turn it into a task on the board
+
+## How it was built
+
+Hera was built spec-first with AI coding agents. [`HERA.md`](HERA.md) is the written spec the agents worked from: the columns, task fields and features above all come from it. Unit tests (Vitest + Testing Library) and end-to-end tests (Playwright) check the result.
+
+## Getting started
+
+Requires Node.js 20+.
+
+```bash
+git clone https://github.com/colbygross/Hera.git
+cd Hera
+npm install
+npm run dev      # start Vite and the Electron app
+npm test         # unit + end-to-end tests
+npm run build    # package a desktop build into release/
+```
+
+---
+
+# Codebase Architecture
 
 An Electron-based Kanban board application built with React, TypeScript, and Vite, utilizing an SQLite database for local data storage.
 
